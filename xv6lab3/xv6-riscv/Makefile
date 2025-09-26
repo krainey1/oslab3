@@ -145,6 +145,8 @@ UPROGS=\
 	$U/_trace\
 	$U/_lab2e3test\
 	$U/_ps\
+	$U/_lab3test\
+	$U/_nice\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)
