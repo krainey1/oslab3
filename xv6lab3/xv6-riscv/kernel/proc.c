@@ -223,6 +223,9 @@ userinit(void)
 
   p = allocproc();
   initproc = p;
+
+  // set nice value for the very first user process
+  p->nice = 20;
   
   p->cwd = namei("/");
 
