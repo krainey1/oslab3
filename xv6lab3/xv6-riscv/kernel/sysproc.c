@@ -105,3 +105,65 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+
+//trace
+uint64
+sys_trace(void)
+{
+  int mask;
+
+  argint(0, &mask);
+
+  struct proc *p = myproc();
+  // set the trace mask in the proc structure
+  p->tracemask = mask;
+
+  return 0;
+}
+
+//set priority
+uint64
+sys_set_priority(void)
+{
+  int pid, priority;
+  argint(0, &pid);
+  argint(1, &priority);
+
+  if (priority < 0) priority = 0;
+  if (priority > 39) priority = 39;
+
+  extern struct proc proc[NPROC];
+  struct proc *p;
+
+  for (p = proc; p < &proc[NPROC]; p++){
+    if (p->pid == pid){
+      p->nice = priority;
+      return 0;
+    }
+  }
+  return -1; //no pid 
+}
+
+uint64
+sys_get_priority(void)
+{
+  int pid;
+  argint(0, &pid);
+
+  extern struct proc proc[NPROC];
+  struct proc *p;
+
+  for (p = proc; p < &proc[NPROC]; p++){
+    if (p->pid == pid){
+      return p->nice;
+    }
+  }
+  return -1; //no pid
+}
+
+uint64
+sys_cps(void)
+{
+  return cps();
+}
