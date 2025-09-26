@@ -260,6 +260,8 @@ kfork(void)
   struct proc *np;
   struct proc *p = myproc();
 
+  p->nice = 20;
+
   // Allocate process.
   if((np = allocproc()) == 0){
     return -1;
@@ -275,6 +277,9 @@ kfork(void)
 
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
+
+  //np->tracemask = p->tracemask;
+  np->tracemask = p->tracemask;
 
   // Cause fork to return 0 in the child.
   np->trapframe->a0 = 0;
@@ -684,4 +689,24 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+int 
+cps(void)
+{
+	struct proc *p;
+	
+	// Loop over process table looking for process with pid
+
+	printf("name \t pid \t state \t priority \n");
+	for(p = proc; p < &proc[NPROC]; p++){
+		if(p->state == SLEEPING)
+			printf("%s \t %d \t SLEEEPING \t %d \n", p->name, p->pid, p->nice);
+		else if(p->state == RUNNING)
+			printf("%s \t %d \t RUNNING \t %d \n", p->name, p->pid, p->nice);
+		else if(p->state == RUNNABLE)
+			printf("%s \t %d \t RUNNABLE \t %d \n", p->name, p->pid, p->nice);	
+	}
+	
+	return 22;
 }
